@@ -1,12 +1,13 @@
 package com.enigma.tokonyadia_api.controller;
 
 import lombok.AllArgsConstructor;
-import com.enigma.tokonyadia_api.entity.Product;
+import org.springframework.http.HttpStatus;
+import com.enigma.tokonyadia_api.util.ResUtil;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.enigma.tokonyadia_api.constant.Constant;
+import com.enigma.tokonyadia_api.dto.req.ProductReq;
 import com.enigma.tokonyadia_api.service.ProductService;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -15,27 +16,28 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<Product> getAllProduct() {
-        return productService.getAll();
+    public ResponseEntity<?> getAllProduct(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "5") Integer size, @RequestParam(required = false) String sort) {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_GET_ALL_PRODUCT_MSG, productService.getAll());
     }
 
     @GetMapping(path = "/{id}")
-    public Product getProductById(@PathVariable String id) {
-        return productService.getById(id);
+    public ResponseEntity<?> getProductById(@PathVariable String id) {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_GET_PRODUCT_MSG, productService.getById(id));
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.create(product);
+    public ResponseEntity<?> createProduct(@RequestBody ProductReq req) {
+        return ResUtil.buildRes(HttpStatus.CREATED, Constant.SUCCESS_CREATE_PRODUCT_MSG, productService.create(req));
     }
 
     @PutMapping(path = "/{id}")
-    public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
-        return productService.update(id, product);
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody ProductReq req) {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_UPDATE_PRODUCT_MSG, productService.update(id, req));
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deleteProduct(@PathVariable String id) {
-        return productService.delete(id);
+    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
+        productService.delete(id);
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_DELETE_PRODUCT_MSG, null);
     }
 }

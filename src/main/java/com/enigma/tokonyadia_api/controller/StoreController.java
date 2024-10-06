@@ -1,12 +1,13 @@
 package com.enigma.tokonyadia_api.controller;
 
 import lombok.AllArgsConstructor;
-import com.enigma.tokonyadia_api.entity.Store;
+import org.springframework.http.HttpStatus;
+import com.enigma.tokonyadia_api.util.ResUtil;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.enigma.tokonyadia_api.dto.req.StoreReq;
 import com.enigma.tokonyadia_api.constant.Constant;
 import com.enigma.tokonyadia_api.service.StoreService;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -15,27 +16,28 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping
-    public List<Store> getAllStore() {
-        return storeService.getAll();
+    public ResponseEntity<?> getAllStore() {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_GET_ALL_STORE_MSG, storeService.getAll());
     }
 
     @GetMapping(path = "/{id}")
-    public Store getStoreById(@PathVariable String id) {
-        return storeService.getById(id);
+    public ResponseEntity<?> getStoreById(@PathVariable String id) {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_GET_STORE_MSG, storeService.getById(id));
     }
 
     @PostMapping
-    public Store createStore(@RequestBody Store store) {
-        return storeService.create(store);
+    public ResponseEntity<?> createStore(@RequestBody StoreReq req) {
+        return ResUtil.buildRes(HttpStatus.CREATED, Constant.SUCCESS_CREATE_STORE_MSG, storeService.create(req));
     }
 
     @PutMapping(path = "/{id}")
-    public Store updateStore(@PathVariable String id, @RequestBody Store store) {
-        return storeService.update(id, store);
+    public ResponseEntity<?> updateStore(@PathVariable String id, @RequestBody StoreReq req) {
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_UPDATE_STORE_MSG, storeService.update(id, req));
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deleteStore(@PathVariable String id) {
-        return storeService.delete(id);
+    public ResponseEntity<?> deleteStore(@PathVariable String id) {
+        storeService.delete(id);
+        return ResUtil.buildRes(HttpStatus.OK, Constant.SUCCESS_DELETE_STORE_MSG, null);
     }
 }

@@ -1,9 +1,13 @@
 package com.enigma.tokonyadia_api.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.enigma.tokonyadia_api.entity.Product;
+import com.enigma.tokonyadia_api.constant.Constant;
+import com.enigma.tokonyadia_api.dto.req.ProductReq;
 import com.enigma.tokonyadia_api.service.ProductService;
+import org.springframework.web.server.ResponseStatusException;
 import com.enigma.tokonyadia_api.repository.ProductRepository;
 
 import java.util.List;
@@ -20,35 +24,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getById(String id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, Constant.ERROR_GET_PRODUCT_MSG));
     }
 
     @Override
-    public Product create(Product product) {
+    public Product create(ProductReq req) {
+        Product product = Product.builder().name(req.getName()).description(req.getDescription()).build();
         return productRepository.save(product);
     }
 
     @Override
-    public Product update(String id, Product product) {
-        Product isProduct = getById(id);
-
-        if (isProduct == null) return null;
-
-        isProduct.setName(product.getName());
-        isProduct.setDesc(product.getDesc());
-        isProduct.setPrice(product.getPrice());
-
-        return productRepository.save(isProduct);
+    public Product update(String id, ProductReq req) {
+        Product product = getById(id);
+        product.setName(req.getName());
+        product.setDescription(req.getDescription());
+        return productRepository.save(product);
     }
 
     @Override
-    public String delete(String id) {
+    public void delete(String id) {
         Product product = getById(id);
-
-        if (product == null) return "Product not found";
-
         productRepository.delete(product);
-
-        return "Product deleted";
     }
 }
