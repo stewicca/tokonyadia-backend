@@ -1,5 +1,7 @@
 package com.enigma.tokonyadia_api.dto.req;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -8,7 +10,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoreReq {
+    @NotNull
+    @NotBlank
+    private String siup;
+
+    @NotNull
+    @NotBlank
     private String name;
-    private String address;
+
+    @NotNull
+    @NotBlank
     private String phone;
+
+    @NotNull
+    @NotBlank
+    private String address;
 }

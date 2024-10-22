@@ -1,15 +1,20 @@
 package com.enigma.tokonyadia_api.dto.req;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerReq {
-    private String name;
-    private String address;
-    private String phone;
-    private String email;
+public class CustomerReq extends CustomerUpdateReq {
+    @NotNull
+    @NotBlank
+    private String userId;
 }

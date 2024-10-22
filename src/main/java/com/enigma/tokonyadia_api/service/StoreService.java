@@ -1,14 +1,21 @@
 package com.enigma.tokonyadia_api.service;
 
-import com.enigma.tokonyadia_api.entity.Store;
+import com.enigma.tokonyadia_api.dto.req.PageReq;
 import com.enigma.tokonyadia_api.dto.req.StoreReq;
-
-import java.util.List;
+import com.enigma.tokonyadia_api.dto.res.StoreRes;
+import com.enigma.tokonyadia_api.entity.Store;
+import org.springframework.data.domain.Page;
 
 public interface StoreService {
-    public List<Store> getAll();
-    public Store getById(String id);
-    public Store create(StoreReq req);
-    public Store update(String id, StoreReq req);
-    public void delete(String id);
+    Page<StoreRes> getAll(PageReq req);
+
+    StoreRes getById(String id);
+
+    Store getOne(String id);
+
+    StoreRes create(StoreReq req);
+
+    StoreRes update(String id, StoreReq req);
+
+    void delete(String id);
 }
