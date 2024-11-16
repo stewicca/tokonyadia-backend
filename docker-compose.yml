@@ -1,0 +1,66 @@
+services:
+  tokonyadia-postgres:
+    container_name: tokonyadia-postgres
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - tokonyadia-postgres-data:/var/lib/postgresql/data
+    networks:
+      - tokonyadia-network
+
+  tokonyadia-redis:
+    container_name: tokonyadia-redis
+    restart: always
+    image: redis:alpine
+    volumes:
+      - tokonyadia-redis-data:/data
+    networks:
+      - tokonyadia-network
+
+  tokonyadia-backend:
+    container_name: tokonyadia-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      DB_HOST: tokonyadia-postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_IN_SECONDS: ${JWT_EXPIRATION_IN_SECONDS}
+      JWT_ISSUER: ${JWT_ISSUER}
+      REFRESH_TOKEN_EXPIRATION_IN_SECONDS: ${REFRESH_TOKEN_EXPIRATION_IN_SECONDS}
+      REDIS_HOST: tokonyadia-redis
+      REDIS_PORT: 6379
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ROOT_PATH_DIRECTORY: ${ROOT_PATH_DIRECTORY}
+      FILE_MAX_SIZE: ${FILE_MAX_SIZE}
+      MIDTRANS_API_URL: ${MIDTRANS_API_URL}
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      - tokonyadia-postgres
+      - tokonyadia-redis
+    networks:
+      - tokonyadia-network
+
+volumes:
+  tokonyadia-postgres-data:
+    name: postgres-data
+  tokonyadia-redis-data:
+    name: redis-data
+
+networks:
+  tokonyadia-network:
+    name: tokonyadia-network
+    driver: bridge
